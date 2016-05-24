@@ -6,6 +6,7 @@ every GameElement is able to check for a collision with another gameElement
 */
 package dynamicbinding;
 
+import java.awt.Rectangle;
 import java.awt.geom.Area;
 
 public abstract class GameElement extends DrawableElement 
@@ -35,6 +36,9 @@ public abstract class GameElement extends DrawableElement
     	return !(shape.isEmpty());
     }
     
-    public abstract void setShape();
+    public void setShape()
+    {
+        shape = new Area(new Rectangle(x,y,width,height));
+    }
     
 }
