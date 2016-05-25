@@ -8,28 +8,24 @@ package dynamicbinding;
 
 public abstract class Living extends RotationalElement
 {
-    private int health;
+    private double health;
     private boolean isAlive;
     
     
     public Living()
     {
-        super();
-        loadImage();
-        health=100;
-        isAlive=true;
+       health = 3;
+       isAlive= true;
     }
-    
     
     public void takeDamage(RotationalElement elem)
     {
-        if (elem instanceof Enemy)
+        while(isAlive)
         {
-            health-=10;
-            
-            if (health==0)
+            health-=.5;
+            if(health <=0)
             {
-                isAlive=false;
+                isAlive = false;
             }
         }
     }
