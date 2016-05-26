@@ -20,7 +20,7 @@ public abstract class Living extends RotationalElement
     
     public void takeDamage(RotationalElement elem)
     {
-        while(isAlive)
+        if(isAlive)
         {
             health-=.5;
             if(health <=0)
