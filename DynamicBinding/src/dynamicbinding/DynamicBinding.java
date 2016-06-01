@@ -47,7 +47,7 @@ public class DynamicBinding
     
     private class Player extends Living
     {
-        //private Arraylist<Items> items;
+        private Arraylist<Item> items;
         boolean up = false;
         boolean down = false;
         boolean left = false;
@@ -152,6 +152,19 @@ public class DynamicBinding
     
     private class Item extends GameElement
     {
+        String name;
+        public Item(String n)
+        {
+            name = n;
+        }
+        
+        public void pickUp(Player p)
+        {
+            if (p.checkCollision(this))
+            {
+                p.items.add(this);
+            }
+        }
         
     }
     
