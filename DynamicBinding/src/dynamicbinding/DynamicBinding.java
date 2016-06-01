@@ -132,7 +132,7 @@ public class DynamicBinding
              
             
             
-
+        
     }
     
     private class Bullet extends RotationalElement
@@ -144,10 +144,21 @@ public class DynamicBinding
     {
         
     }
-    
+    /*
+    Fly moves with slight variation of angle each move,
+    collisions damage player in an "allahu ackbar" sort of way
+    */
     private class Fly extends Enemy
     {
-        
+        public void move() {
+            int randDir = (int) (Math.random() * 91) - 45;
+            this.direction += randDir;
+            this.move(1);
+            if (checkCollision(p)) {
+                p.takeDamage(p);
+                enemy.remove(this);
+            }
+        }
     }
     
     private class Item extends GameElement
