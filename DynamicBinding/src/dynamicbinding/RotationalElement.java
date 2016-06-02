@@ -16,6 +16,9 @@ public abstract class RotationalElement extends GameElement
 {
     //0-360 angle which determines which direction the object is facing
     public double direction;
+    public double damageGive;
+    
+    
     
     //convertes degrease to radians
     public double degToRad()
