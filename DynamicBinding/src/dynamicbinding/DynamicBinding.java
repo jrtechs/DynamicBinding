@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.Timer;
+import java.awt.Graphics;
 
 public class DynamicBinding 
 {
@@ -28,7 +29,8 @@ public class DynamicBinding
     ArrayList<Enemy> enemy;
     ArrayList<Bullet> bullets;
     Player p;
-    Map map;
+  //  Map map;
+    Room [][] rooms;
     
     Timer move;//moves elements
     Timer time;
@@ -132,7 +134,7 @@ public class DynamicBinding
              
             
             
-
+        
     }
     
     private class Bullet extends RotationalElement
@@ -140,14 +142,119 @@ public class DynamicBinding
         
     }
     
+    
+    /* 
     private class Map extends DrawableElement
     {
+        ArrayList<Obstacle> obstacles;
+        ArrayList<Item> items;
+        ArrayList<Doorway> doors;
         
+        public Map() {
+            //max could also be player level?
+            int randObs = (int)(Math.random() * 7);
+            int randItems = (int)(Math.random() * 3);
+            int randDoors = (int)(Math.random() * 4) + 1;
+            //(int)(Math.random() * (max - min)) + min
+            
+            //constructors for these aren't made yet
+            for(int i = 0; i < randObs; i++) {
+                obstacles.add(new Obstacle());
+            }
+            for(int i = 0; i < randItems; i++) {
+                items.add(new Item());
+            }
+            for(int i = 0; i < randDoors; i++) {
+                doors.add(new Doorway());
+            }
+        }
+        
+        public Map(ArrayList<Obstacle> o, ArrayList<Item> i, ArrayList<Doorway> d) {
+            obstacles = o;
+            items = i;
+            doors = d;
+        }
+
+        public void draw(Graphics g) {
+            
+            for(Obstacle o: obstacles) {
+                o.draw(g);
+            }
+            for(Item i: items) {
+                i.draw(g);
+            }
+            for(Doorway d: doors) {
+                d.draw(g);
+            }
+        }
+        
+        //check(player) method???
+    }
+     */
+    
+    //rooms change
+    private class Room extends DrawableElement {
+        
+        ArrayList<Obstacle> obstacles;
+        ArrayList<Item> items;
+        ArrayList<Doorway> doors;
+        
+        public Room(ArrayList<Obstacle> o, ArrayList<Item> i, ArrayList<Doorway> d) {
+            obstacles = o;
+            items = i;
+            doors = d;
+        }
+        
+        public Room() {
+            //max could also be player level?
+            int randObs = (int)(Math.random() * 7);
+            int randItems = (int)(Math.random() * 3);
+            int randDoors = (int)(Math.random() * 4) + 1;
+            //(int)(Math.random() * (max - min)) + min
+            
+            //constructors for these aren't made yet
+            for(int i = 0; i < randObs; i++) {
+                obstacles.add(new Obstacle());
+            }
+            for(int i = 0; i < randItems; i++) {
+                items.add(new Item());
+            }
+            for(int i = 0; i < randDoors; i++) {
+                doors.add(new Doorway());
+            }
+        }
+        
+        public void draw(Graphics g) {
+            
+            for(Obstacle o: obstacles) {
+                o.draw(g);
+            }
+            for(Item i: items) {
+                i.draw(g);
+            }
+            for(Doorway d: doors) {
+                d.draw(g);
+            }
+        }
     }
     
+    
+    
+    /*
+    Fly moves with slight variation of angle each move,
+    collisions damage player in an "allahu ackbar" sort of way
+    */
     private class Fly extends Enemy
     {
-        
+        public void move() {
+            int randDir = (int) (Math.random() * 91) - 45;
+            this.direction += randDir;
+            this.move(1);
+            if (checkCollision(p)) {
+                p.takeDamage(p);
+                enemy.remove(this);
+            }
+        }
     }
     
     private class Item extends GameElement
@@ -171,6 +278,16 @@ public class DynamicBinding
     private class Obstacle extends MapItem
     {
         
+    }
+    
+    private class Doorway extends MapItem {
+        
+        public void onCollission() {
+            
+            if(enemy.size() == 0) {
+                //new room
+            }
+        }
     }
     
     
