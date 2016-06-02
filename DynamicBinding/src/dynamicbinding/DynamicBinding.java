@@ -20,6 +20,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 import java.awt.Graphics;
+import java.awt.image.BufferedImage;
 
 public class DynamicBinding 
 {
@@ -29,8 +30,7 @@ public class DynamicBinding
     ArrayList<Enemy> enemy;
     ArrayList<Bullet> bullets;
     Player p;
-  //  Map map;
-    Room [][] rooms;
+    Map map;
     
     Timer move;//moves elements
     Timer time;
@@ -49,7 +49,7 @@ public class DynamicBinding
     
     private class Player extends Living
     {
-        private Arraylist<Item> items;
+        private ArrayList<Item> items;
         boolean up = false;
         boolean down = false;
         boolean left = false;
@@ -126,8 +126,7 @@ public class DynamicBinding
         
         public void shoot(int b)
         {
-            Bullet bu = new Bullet();
-            bu.direction = b;
+            Bullet bu = new Tear(x, y, b);
             bullets.add(bu);
         }
             
@@ -137,19 +136,117 @@ public class DynamicBinding
         
     }
     
-    private class Bullet extends RotationalElement
+    private abstract class Bullet extends RotationalElement
     {
+        
+         public Bullet(int xLoc, int yLoc, double dir) {
+            direction = dir;
+            width = 10;
+            height = 10;
+            x = xLoc;
+            y = yLoc;
+         }
+         
+         public void move()
+         {
+             if(this.x > /* width of frame */ || this.x < 0 || this.y > /* height of frame */ || this.y < 0)
+             {
+                 this.removeBullet();
+             }
+             for(Obstacle o: /*ObstacleList*/)
+             {
+                 if(checkCollision(o))
+                 {
+                    this.removeBullet();
+                 }
+             }
+         }
+         
+         public void removeBullet()
+         {
+            bullets.remove(this);
+         }
+    }
+    private class Blood extends Bullet 
+    {
+        public Blood(int xLoc, int yLoc, double dir)
+        {
+            super(xLoc, yLoc, dir);
+            imageLocation = "blood.jpg";
+            loadImage();
+            //call RotationalElement's move
+        }
+        
+        public void move()
+        {
+            super.move();
+            if(checkCollision(p /*p is player*/))
+            {                
+                p.takeDamage(this);
+                this.removeBullet();
+            }
+            for(Enemy e: enemy)
+            {
+                if(checkCollision(e))
+                {
+                    this.removeBullet();
+                }
+            }
+        }              
+    }
+        
+    private class Tear extends Bullet
+    {
+        public Tear(int xLoc, int yLoc, double dir)
+        {
+            super(xLoc, yLoc, dir);
+            imageLocation = "tear.jpg";
+            loadImage();
+        }
+        
+        public void move()
+        {
+            super.move();
+            for(Enemy e: enemy)
+            {
+                if(checkCollision(e))
+                {
+                    e.takeDamage(this);
+                    this.removeBullet();
+                }
+            }
+            for(Bullet b: bullets)
+            {
+                if(b instanceof Blood)
+                {
+                    if(checkCollision(this))
+                    {
+                        
+                    }
+                }
+            }
+        }
         
     }
     
     
-    /* 
+     
     private class Map extends DrawableElement
     {
         ArrayList<Obstacle> obstacles;
         ArrayList<Item> items;
         ArrayList<Doorway> doors;
         
+        public Map(ArrayList<Obstacle> o, ArrayList<Item> i, ArrayList<Doorway> d, int mx, int my, String iloc) {
+            obstacles = o;
+            items = i;
+            doors = d;
+            x = mx;
+            y = my;
+            imageLocation = iloc;
+        }
+        
+      /*  
         public Map() {
             //max could also be player level?
             int randObs = (int)(Math.random() * 7);
@@ -187,58 +284,9 @@ public class DynamicBinding
                 d.draw(g);
             }
         }
-        
+        */
         //check(player) method???
     }
-     */
-    
-    //rooms change
-    private class Room extends DrawableElement {
-        
-        ArrayList<Obstacle> obstacles;
-        ArrayList<Item> items;
-        ArrayList<Doorway> doors;
-        
-        public Room(ArrayList<Obstacle> o, ArrayList<Item> i, ArrayList<Doorway> d) {
-            obstacles = o;
-            items = i;
-            doors = d;
-        }
-        
-        public Room() {
-            //max could also be player level?
-            int randObs = (int)(Math.random() * 7);
-            int randItems = (int)(Math.random() * 3);
-            int randDoors = (int)(Math.random() * 4) + 1;
-            //(int)(Math.random() * (max - min)) + min
-            
-            //constructors for these aren't made yet
-            for(int i = 0; i < randObs; i++) {
-                obstacles.add(new Obstacle());
-            }
-            for(int i = 0; i < randItems; i++) {
-                items.add(new Item());
-            }
-            for(int i = 0; i < randDoors; i++) {
-                doors.add(new Doorway());
-            }
-        }
-        
-        public void draw(Graphics g) {
-            
-            for(Obstacle o: obstacles) {
-                o.draw(g);
-            }
-            for(Item i: items) {
-                i.draw(g);
-            }
-            for(Doorway d: doors) {
-                d.draw(g);
-            }
-        }
-    }
-    
-    
     
     /*
     Fly moves with slight variation of angle each move,
