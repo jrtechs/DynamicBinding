@@ -15,9 +15,8 @@ import java.awt.geom.Area;
 public abstract class RotationalElement extends GameElement
 {
     //0-360 angle which determines which direction the object is facing
-    public double direction;
-    public double damageGive;
-    
+    public double direction,damageGive;
+    public int speed;
     
     
     //convertes degrease to radians
@@ -41,8 +40,8 @@ public abstract class RotationalElement extends GameElement
     
     public void move(int multiplier)
     {
-        y += Math.sin(degToRad()) * multiplier;
-        x += Math.cos(degToRad()) * multiplier;
+        y += Math.sin(degToRad()) * multiplier * speed;
+        x += Math.cos(degToRad()) * multiplier * speed;
     }
     
     /*

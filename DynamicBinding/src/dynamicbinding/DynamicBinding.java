@@ -20,6 +20,8 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 import java.awt.Graphics;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 
 public class DynamicBinding 
@@ -29,6 +31,7 @@ public class DynamicBinding
     public JPanel panel;
     ArrayList<Enemy> enemy;
     ArrayList<Bullet> bullets;
+    ArrayList<Obstacle> obstacles;
     Player p;
     Map map;
     
@@ -149,11 +152,11 @@ public class DynamicBinding
          
          public void move()
          {
-             if(this.x > /* width of frame */ || this.x < 0 || this.y > /* height of frame */ || this.y < 0)
+             if(this.x > frame.getWidth() || this.x < 0 || this.y > frame.getHeight() || this.y < 0)
              {
                  this.removeBullet();
              }
-             for(Obstacle o: /*ObstacleList*/)
+             for(Obstacle o: obstacles)
              {
                  if(checkCollision(o))
                  {
@@ -294,15 +297,52 @@ public class DynamicBinding
     */
     private class Fly extends Enemy
     {
+        public Fly() {
+            //this.imageLocation = "";
+        }
         public void move() {
             int randDir = (int) (Math.random() * 91) - 45;
             this.direction += randDir;
-            this.move(1);
+            this.move(-1);
             if (checkCollision(p)) {
-                p.takeDamage(p);
+                p.takeDamage(this);
                 enemy.remove(this);
             }
         }
+    }
+    
+    private class Bee extends Enemy
+    {
+        public Bee() {
+            //this.imageLocation = "";
+        }
+        public void move() {
+            this.direction = angleToPlayer(p);
+            this.move(-1);
+            if (checkCollision(p)) {
+                p.takeDamage(this);
+                enemy.remove(this);
+            }
+        }
+    }
+    
+    private class Spider extends Enemy {
+        private Timer jump;
+        public Spider() 
+        {
+            this.speed = 8;
+            ActionListener tick = new ActionListener() 
+            {
+                public void actionPerformed(ActionEvent e) 
+                {
+                    direction = angleToPlayer(p);
+                    move(-1);
+                }
+            };
+            jump = new Timer(70,tick);
+            jump.start();
+        }
+            //this.imageLocation = "";
     }
     
     private class Item extends GameElement
