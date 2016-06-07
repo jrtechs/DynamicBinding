@@ -261,7 +261,7 @@ public class DynamicBinding implements KeyListener
         public Tear(int xLoc, int yLoc, double dir)
         {
             super(xLoc, yLoc, dir);
-            imageLocation = "tear.jpg";
+            imageLocation = "tearbullet.jpg";
             loadImage();
         }
         
@@ -370,7 +370,7 @@ public class DynamicBinding implements KeyListener
     private class Bee extends Enemy
     {
         public Bee() {
-            //this.imageLocation = "";
+            this.imageLocation = "BEE.jpg";
         }
         public void move() {
             this.direction = angleToPlayer(p);
