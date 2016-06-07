@@ -54,11 +54,16 @@ public class DynamicBinding implements KeyListener
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         p = new Player();
         map = new Map(obstacles,items,0,0,"map_picture");
+        enemy = new ArrayList<Enemy>();
+        bullets = new ArrayList<Bullet>();
+        obstacles = new ArrayList<Obstacle>();
+        items = new ArrayList<Item>();
         panel=new JPanel() 
         {
             public void paintComponent(Graphics g)
             {
                 g.setColor(Color.BLACK);
+                g.fillRect(0,0,frame.getWidth(),frame.getHeight());
                 for(int e=0; e<enemy.size(); e++)
                 {
                     enemy.get(e).draw(g);
@@ -88,7 +93,8 @@ public class DynamicBinding implements KeyListener
                 panel.repaint();
             }
         };
-        Timer move = new Timer(1000,a);  //moves elements
+        Timer move = new Timer(10,a);
+        move.start();  //moves elements
         frame.addKeyListener(this);
         frame.setVisible(true);
     }
@@ -120,6 +126,8 @@ public class DynamicBinding implements KeyListener
         {
             width = 50;
             height = 50;
+            speed = 10;
+            health = 10;
             x=frame.getWidth()/2-this.width/2;
             y=frame.getHeight()/2-this.height/2;
             imageLocation = "player.png";
@@ -233,7 +241,7 @@ public class DynamicBinding implements KeyListener
         public Blood(int xLoc, int yLoc, double dir)
         {
             super(xLoc, yLoc, dir);
-            imageLocation = "blood.jpg";
+            imageLocation = "CBlood.png";
             loadImage();
             //call RotationalElement's move
         }
@@ -261,7 +269,7 @@ public class DynamicBinding implements KeyListener
         public Tear(int xLoc, int yLoc, double dir)
         {
             super(xLoc, yLoc, dir);
-            imageLocation = "tearbullet.jpg";
+            imageLocation = "CTear.png";
             loadImage();
         }
         
@@ -370,7 +378,7 @@ public class DynamicBinding implements KeyListener
     private class Bee extends Enemy
     {
         public Bee() {
-            this.imageLocation = "BEE.jpg";
+            this.imageLocation = "CBee2.png";
         }
         public void move() {
             this.direction = angleToPlayer(p);
