@@ -30,4 +30,5 @@ public abstract class Enemy extends Living
     {
         return (Math.atan2((y - e.y),(x - e.x)));
     }
+    public abstract void move();
 }

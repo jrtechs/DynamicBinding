@@ -14,17 +14,19 @@
 */
 package dynamicbinding;
 
+import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.Timer;
-import java.awt.Graphics;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.image.BufferedImage;
 
-public class DynamicBinding 
+public class DynamicBinding implements KeyListener
 {
     //fields
     public JFrame frame;
@@ -32,6 +34,7 @@ public class DynamicBinding
     ArrayList<Enemy> enemy;
     ArrayList<Bullet> bullets;
     ArrayList<Obstacle> obstacles;
+    ArrayList<Item> items;
     Player p;
     Map map;
     
@@ -41,10 +44,65 @@ public class DynamicBinding
 
     public static void main(String[] args) 
     {
-        
+        DynamicBinding gameOfIsaac = new DynamicBinding();
     }
     
-    
+    public DynamicBinding()
+    {
+        frame = new JFrame("Alex's Group - DynamicFrame");
+        frame.setBounds(200,100,1000,700);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        p = new Player();
+        map = new Map(obstacles,items,0,0,"map_picture");
+        panel=new JPanel() 
+        {
+            public void paintComponent(Graphics g)
+            {
+                g.setColor(Color.BLACK);
+                for(int e=0; e<enemy.size(); e++)
+                {
+                    enemy.get(e).draw(g);
+                }
+                for(int b=0; b<bullets.size(); b++)
+                {
+                    bullets.get(b).draw(g);
+                }
+                for(int o=0; o<obstacles.size(); o++)
+                {
+                    obstacles.get(o).draw(g);
+                }
+                p.draw(g);
+                map.draw(g);
+            }   
+	};
+	frame.add(panel);
+        ActionListener a = new ActionListener()
+        {
+            public void actionPerformed(ActionEvent e)
+            {
+                p.move();
+                for(int i = 0; i<enemy.size();i++)
+                {
+                    enemy.get(i).move();
+                }
+                panel.repaint();
+            }
+        };
+        Timer move = new Timer(1000,a);  //moves elements
+        frame.addKeyListener(this);
+        frame.setVisible(true);
+    }
+    public void keyPressed(KeyEvent e)
+    {
+        p.updateDirection(e,true);
+    }
+    public void keyReleased(KeyEvent e)
+    {
+        p.updateDirection(e,false);
+    }
+    public void keyTyped(KeyEvent e) {
+        
+    }
     /*
         inner classes that require the fields in DynamicBinding
     */
@@ -238,12 +296,10 @@ public class DynamicBinding
     {
         ArrayList<Obstacle> obstacles;
         ArrayList<Item> items;
-        ArrayList<Doorway> doors;
         
-        public Map(ArrayList<Obstacle> o, ArrayList<Item> i, ArrayList<Doorway> d, int mx, int my, String iloc) {
+        public Map(ArrayList<Obstacle> o, ArrayList<Item> i, int mx, int my, String iloc) {
             obstacles = o;
             items = i;
-            doors = d;
             x = mx;
             y = my;
             imageLocation = iloc;
@@ -342,6 +398,9 @@ public class DynamicBinding
             jump = new Timer(70,tick);
             jump.start();
         }
+        public void move() {
+            
+        }
             //this.imageLocation = "";
     }
     
@@ -366,17 +425,5 @@ public class DynamicBinding
     private class Obstacle extends MapItem
     {
         
-    }
-    
-    private class Doorway extends MapItem {
-        
-        public void onCollission() {
-            
-            if(enemy.size() == 0) {
-                //new room
-            }
-        }
-    }
-    
-    
+    }   
 }
