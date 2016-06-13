@@ -50,8 +50,9 @@ public class DynamicBinding implements KeyListener
     public DynamicBinding()
     {
         frame = new JFrame("Alex's Group - DynamicFrame");
-        frame.setBounds(200,100,850,650);
+        frame.setBounds(200,100,805,625);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setResizable(false);
         p = new Player();
         map = new Map();
         enemy = new ArrayList<Enemy>();
@@ -89,10 +90,18 @@ public class DynamicBinding implements KeyListener
                 {
                     enemy.get(i).move();
                 }
-                for (Bullet b: bullets)
+                try
                 {
-                    b.move();
+                    for (Bullet b: bullets)
+                    {
+                        b.move();
+                    }
                 }
+                catch(Exception ex)
+                {
+                    
+                }
+                
                 panel.repaint();
             }
         };
@@ -158,6 +167,22 @@ public class DynamicBinding implements KeyListener
             {
                 x += 10;
             }
+            if (x + (width * 2) - 20 > frame.getWidth())
+            {
+                x -= 10;
+            }
+            if (x < 0)
+            {
+                x += 10;
+            }
+            if (y + (height * 2) > frame.getHeight())
+            {
+                y -= 10;
+            }
+            if (y < 0)
+            {
+                y += 10;
+            }
         }
         public void updateDirection(KeyEvent e, boolean b)
         {
@@ -187,11 +212,11 @@ public class DynamicBinding implements KeyListener
             }
             if(e.getKeyCode()==KeyEvent.VK_LEFT)
             {
-                shoot(180);
+                shoot(0);
             }
             if(e.getKeyCode()==KeyEvent.VK_RIGHT)
             {
-                shoot(0);
+                shoot(180);
             }
             
         }
@@ -222,7 +247,8 @@ public class DynamicBinding implements KeyListener
          
          public void move()
          {
-             if(this.x > frame.getWidth() || this.x < 0 || this.y > frame.getHeight() || this.y < 0)
+             super.move(-1);
+             if(this.x + width > frame.getWidth() || this.x < 0 || this.y + (height* 2) - 20 > frame.getHeight() || this.y < 0)
              {
                  this.removeBullet();
              }
