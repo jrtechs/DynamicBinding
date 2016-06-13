@@ -50,10 +50,10 @@ public class DynamicBinding implements KeyListener
     public DynamicBinding()
     {
         frame = new JFrame("Alex's Group - DynamicFrame");
-        frame.setBounds(200,100,1000,700);
+        frame.setBounds(200,100,850,650);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         p = new Player();
-        map = new Map(obstacles,items,0,0,"map_picture");
+        map = new Map();
         enemy = new ArrayList<Enemy>();
         bullets = new ArrayList<Bullet>();
         obstacles = new ArrayList<Obstacle>();
@@ -62,8 +62,8 @@ public class DynamicBinding implements KeyListener
         {
             public void paintComponent(Graphics g)
             {
-                g.setColor(Color.BLACK);
-                g.fillRect(0,0,frame.getWidth(),frame.getHeight());
+                map.draw(g);
+                
                 for(int e=0; e<enemy.size(); e++)
                 {
                     enemy.get(e).draw(g);
@@ -77,7 +77,6 @@ public class DynamicBinding implements KeyListener
                     obstacles.get(o).draw(g);
                 }
                 p.draw(g);
-                map.draw(g);
             }   
 	};
 	frame.add(panel);
@@ -90,6 +89,10 @@ public class DynamicBinding implements KeyListener
                 {
                     enemy.get(i).move();
                 }
+                for (Bullet b: bullets)
+                {
+                    b.move();
+                }
                 panel.repaint();
             }
         };
@@ -101,6 +104,7 @@ public class DynamicBinding implements KeyListener
     public void keyPressed(KeyEvent e)
     {
         p.updateDirection(e,true);
+        
     }
     public void keyReleased(KeyEvent e)
     {
@@ -128,32 +132,31 @@ public class DynamicBinding implements KeyListener
             height = 50;
             speed = 10;
             health = 10;
+            direction=0;
             x=frame.getWidth()/2-this.width/2;
             y=frame.getHeight()/2-this.height/2;
-            imageLocation = "player.png";
+            imageLocation = "isaac2.png";
             super.loadImage();
         }
+        
+  
         public void move()
         {
             if(down == true)
             {
-                direction = 270;
-                super.move(-1);
+               y += 10;
             }
             if(up == true)
             {
-                direction = 90;
-                super.move(-1);
+                y -= 10;
             }
             if(left == true)
             {
-                direction = 180;
-                super.move(-1);
+                x -= 10;
             }
             if(right == true)
             {
-                direction = 0;
-                super.move(-1);
+                x += 10;
             }
         }
         public void updateDirection(KeyEvent e, boolean b)
@@ -210,6 +213,7 @@ public class DynamicBinding implements KeyListener
         
          public Bullet(int xLoc, int yLoc, double dir) {
             direction = dir;
+            speed=5;
             width = 10;
             height = 10;
             x = xLoc;
@@ -229,8 +233,9 @@ public class DynamicBinding implements KeyListener
                     this.removeBullet();
                  }
              }
+             //WE NEED TO MOVE THE BULLET BY CHANGING IT'S X and Y
          }
-         
+                  
          public void removeBullet()
          {
             bullets.remove(this);
@@ -242,7 +247,10 @@ public class DynamicBinding implements KeyListener
         {
             super(xLoc, yLoc, dir);
             imageLocation = "CBlood.png";
+            speed=5;
             loadImage();
+            width=20;
+            height=31;
             //call RotationalElement's move
         }
         
@@ -269,6 +277,9 @@ public class DynamicBinding implements KeyListener
         public Tear(int xLoc, int yLoc, double dir)
         {
             super(xLoc, yLoc, dir);
+            speed=5;
+            width=40;
+            height=51;
             imageLocation = "CTear.png";
             loadImage();
         }
@@ -305,12 +316,14 @@ public class DynamicBinding implements KeyListener
         ArrayList<Obstacle> obstacles;
         ArrayList<Item> items;
         
-        public Map(ArrayList<Obstacle> o, ArrayList<Item> i, int mx, int my, String iloc) {
-            obstacles = o;
-            items = i;
-            x = mx;
-            y = my;
-            imageLocation = iloc;
+        public Map() {
+            //obstacles = o;
+            //items = i;
+            //x = mx;
+            //y = my;
+            //imageLocation = iloc;
+            imageLocation="backdrop.png";
+            loadImage();
         }
         
       /*  
@@ -362,7 +375,11 @@ public class DynamicBinding implements KeyListener
     private class Fly extends Enemy
     {
         public Fly() {
-            //this.imageLocation = "";
+            width=40;
+            height=25;
+            speed=8;
+            this.imageLocation = "flyF.png";
+            loadImage();
         }
         public void move() {
             int randDir = (int) (Math.random() * 91) - 45;
@@ -378,7 +395,11 @@ public class DynamicBinding implements KeyListener
     private class Bee extends Enemy
     {
         public Bee() {
+            width=60;
+            height=60;
+            speed=4;
             this.imageLocation = "CBee2.png";
+            loadImage();
         }
         public void move() {
             this.direction = angleToPlayer(p);
@@ -395,6 +416,11 @@ public class DynamicBinding implements KeyListener
         public Spider() 
         {
             this.speed = 8;
+            width=100;
+            height=75;
+            imageLocation="spider2.png";
+            loadImage();
+            
             ActionListener tick = new ActionListener() 
             {
                 public void actionPerformed(ActionEvent e) 
@@ -409,7 +435,6 @@ public class DynamicBinding implements KeyListener
         public void move() {
             
         }
-            //this.imageLocation = "";
     }
     
     private class Item extends GameElement
